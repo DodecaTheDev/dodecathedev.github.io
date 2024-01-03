@@ -1,0 +1,114 @@
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #1E1420;
+}
+
+@font-face {
+  src: url("font/NexaBold.ttf");
+  font-family: Nexa Heavy;
+}
+
+@font-face {
+  src: url("font/NexaBold.ttf");
+  font-family: Nexa Bold;
+}
+
+@font-face {
+  src: url("font/NexaLight.ttf");
+  font-family: Nexa Light;
+}
+
+.topbar {
+  background: rgb(0, 159, 192);
+  background: linear-gradient(90deg, rgba(0, 159, 192, 1) 0%, rgba(0, 106, 127, 1) 100%);
+  padding: 6px 12px;
+  color: white;
+  font-family: Nexa Heavy;
+  font-size: 24px;
+  border-bottom: 3px #050304 solid;
+}
+
+.stupid {
+  height: 2px;
+  background: rgb(0, 255, 255);
+  background: linear-gradient(90deg, rgba(0, 255, 255, 1) 0%, rgba(255, 32, 113, 1) 100%);
+  border-bottom: 5px #050304 solid;
+}
+
+.bottombar {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 70px;
+  background-color: #050304;
+  text-align: center;
+  font-family: Nexa Heavy;
+  font-size: 24px;
+}
+a {
+  text-decoration: none;
+
+}
+.stupid2 {
+  transform: translateY(-70px);
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  height: 2px;
+  background: rgb(0, 255, 255);
+  background: linear-gradient(90deg, rgba(255, 32, 113, 1) 0%, rgba(0, 255, 255, 1) 100%);
+  border-top: 5px #050304 solid;
+}
+.textside {
+  width: 580px;
+  height: 120px;
+  background-color: #023542;
+  border-right: 170px #062A36 solid;
+}
+t {
+  text-transform: uppercase;
+  padding: 25px 25px;
+  float: left;
+  font-family: Nexa Bold;
+  color: white;
+  font-size: 35px;
+  letter-spacing: -1.1px;
+}
+st {
+  transform: translateY(-38px);
+  padding: 0px 26px;
+  float:left;
+  font-family: Nexa Light;
+  color: rgba(255,255,255,0.9);
+  font-size: 20px; 
+  letter-spacing: -0.15px;
+}
+buh {
+  position: absolute;
+  transform: translate(5000px, 50px);
+}
+button {
+  font-family: Nexa Heavy;
+  background-color: rgba(33,4,14,0.5);
+  color: #ff2071;
+  font-size: 24px;
+  border: 2px #ff2071 solid;
+  border-radius: 5px;
+  transition-duration: 150ms;
+  padding:5px 5px;
+}
+button:hover {
+  background-color: #21040e;
+}
+radio {
+      --color: #999;
+    --checked-color: #ff5722;
+
+    --bg-color: #e8e8e8;
+}

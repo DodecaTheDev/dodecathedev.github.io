@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Ribbon Editor</title>
+  <link rel="icon" type="image/x-icon" href="img/favicon.png">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+
+<body>
+  <div class="topbar">RIBBON EDITOR</div>
+  <div class="stupid"></div>
+  <div>
+    <br>
+    <center>
+      <label for="title" style="color: #ff2071; font-family: Nexa Bold">Ribbon Title</label>
+      <br />
+      <input value="HiGh FiVeS!" id="name" name="name" style="
+            background-color: #21040e;
+            border: 2px #ff2071 solid;
+            color: #ff2071;
+            font-family: Nexa Light;
+          " type="text" />
+      <br />
+      <br />
+      <label for="desc" style="color: #ff2071; font-family: Nexa Bold">Ribbon Description</label>
+      <br />
+      <input value="Completed the track with everyone alive" id="desc" name="desc" style="
+            background-color: #21040e;
+            border: 2px #ff2071 solid;
+            color: #ff2071;
+            font-family: Nexa Light;
+          " type="text" />
+      <br />
+      <br />
+      <label for="bp" style="color: #ff2071; font-family: Nexa Bold">Beatpoint Count</label>
+      <br />
+      <input value="5" min="1" id="bp" name="bp" style="
+            background-color: #21040e;
+            border: 2px #ff2071 solid;
+            color: #ff2071;
+            font-family: Nexa Light;
+          " type="number" />
+    </center>
+  </div>
+  <br>
+  <div>
+    <center>
+      <div id="cc">
+        <div class="textside" id="bombastic">
+          <t id="tname">HIGH FIVES!</t> <br><br><br><br><br><br>
+          <st id="dname">Completed the track with everyone alive</st>
+          <br><br>
+          <div><img width="auto" height="40px" style="transform: translate(348px, -104px);" id="bpiconc"
+              src="img/bp1.png">
+            <tx style="
+position: absolute;
+color: white;
+font-family: Nexa Light;
+font-size: 40px;
+transform: translate(345px, -119px);">&nbsp;×</tx>
+            <tx id="bpcount" style="
+      position: absolute;
+      font-size: 35px;
+      font-family: Nexa Heavy;
+      color: white;
+      transform: translate(382px, -114px);
+      ">5</tx>
+          </div>
+        </div>
+        <br><br><br>
+
+      </div>
+    </center>
+  </div>
+  <br>
+  <div>
+    <center>
+      <input type="radio" onclick="colSwitch();" id="cyan" name="players" value="cyan" checked>
+      <label for="cyan" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: cyan;
+        font-size: 24px;
+        ">Cyan (Square)</label>
+      <br>
+      <input type="radio" id="yellow" onclick="colSwitch();" name="players" value="yellow">
+      <label for="yellow" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: yellow;
+        font-size: 24px;
+        ">Yellow (Triangle)</label>
+      <br>
+      <input type="radio" id="green" onclick="colSwitch();" name="players" value="green">
+      <label for="green" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: #66ff00;
+        font-size: 24px;
+        ">Green (Pentagon)</label>
+      <br>
+      <input type="radio" id="orange" onclick="colSwitch();" name="players" value="orange">
+      <label for="orange" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: #ff9900;
+        font-size: 24px;
+        ">Orange (Circle)</label>
+      <br>
+      <input type="radio" id="bnp" onclick="colSwitch();" name="players" value="bnp">
+      <label for="bnp" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: deeppink;
+        font-size: 24px;
+        ">Blue & Pink</label>
+      <br>
+      <input type="radio" id="custom" onclick="colSwitch();" name="players" value="custom">
+      <label for="custom" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: white;
+        font-size: 24px;
+        ">Custom (click after changing color)</label>&nbsp;<input type="color" id="ccolor" value="#ff0000" style="
+  background-color: #21040e;
+  border: 1px #ff2071 solid;
+">
+      <input type="color" id="ccolor2" value="#ff0000" style="
+  background-color: #21040e;
+  border: 1px #ff2071 solid;
+">
+      <br>
+      <input type="radio" id="grad" onclick="colSwitch();" name="players" value="grad">
+      <label for="grad" onclick="colSwitch();" style="  
+        font-family: Nexa Light;
+        color: white;
+        font-size: 24px;
+        ">Custom Gradient (click after changing color)</label>&nbsp;<input type="color" id="gradc" value="#ff0000"
+        style="
+  background-color: #21040e;
+  border: 1px #ff2071 solid;
+">
+      <input type="color" id="gradc2" value="#ff0000" style="
+  background-color: #21040e;
+  border: 1px #ff2071 solid;
+">
+      <input type="color" id="gradc3" value="#ff0000" style="
+  background-color: #21040e;
+  border: 1px #ff2071 solid;
+">
+    </center>
+
+  </div>
+  <div>
+    <center>
+      <button onclick="buttonSwitch('1');"><img width="auto" height="40px" src="img/bp1.png"></button>
+      <button onclick="buttonSwitch('2');"><img width="auto" height="40px" src="img/bp2.png"></button>
+      <button onclick="buttonSwitch('3');"><img width="auto" height="40px" src="img/bp3.png"></button>
+      <button onclick="buttonSwitch('4');"><img width="auto" height="40px" src="img/bp4.png"></button>
+      <button onclick="buttonSwitch('5');"><img width="auto" height="40px" src="img/bp5.png"></button>
+      <button onclick="buttonSwitch('6');"><img width="auto" height="40px" src="img/bp6.png"></button>
+      <button onclick="buttonSwitch('7');"><img width="auto" height="40px" src="img/bp7.png"></button>
+      <button onclick="buttonSwitch('8');"><img width="auto" height="40px" src="img/bp8.png"></button>
+      <button onclick="buttonSwitch('9');"><img width="auto" height="40px" src="img/bp9.png"></button>
+      <button onclick="buttonSwitch('10');" b><img width="auto" height="40px" src="img/bp10.png"></button>
+    </center>
+  </div>
+  <div class="bottombar">
+    <a href="https://www.dodeca.dev" style="
+  background: -webkit-linear-gradient(left, #8D84B0, #729CC0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+      ">www.dodeca.dev</a>
+  </div>
+  <div class="stupid2"></div>
+  <script src="script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+
+</body>
+
+</html>
