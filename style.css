@@ -1,0 +1,64 @@
+body {
+	margin: 0px;
+	background-image: linear-gradient(to top, #5a6e91, #2d2d2d);
+	width: 100vw;
+	height: 100vh;
+}
+
+.topnav {
+	background-color: #1d1d1d;
+	overflow: hidden;
+	box-shadow: 0px 0px 20px 2px #2d2d2d;
+}
+.topnav a {
+	display: block;
+	float: left;
+	color: white;
+	text-decoration: none;
+	font-family: Jura;
+	padding: 10px 10px;
+	transition-duration: 300ms;
+	margin-right: 20px;
+	
+ }
+.topnav a:hover{
+	color: #3DB5FF;
+	background-color: #005D91;
+	box-shadow: 0px 0px 10px 10px #005D91;
+}
+h1 {
+	font-family: Prompt;
+	color: white;
+}
+p {
+	color: white;
+	font-family: jura;
+}
+.sites {
+	display: inline-block;
+	background-color: rgba(0,0,0,0.05);
+	width: 150px;
+	height: 150px;
+	border-radius: 15px;
+	backdrop-filter: blur(4px);
+	box-shadow: 0px 0px 10px 0px rgba(0,0,0,.20);
+	cursor: pointer;
+	text-decoration: none;
+	margin: 10px;
+	transition-delay: 150ms;
+	transition: all 0.25s ease;
+	
+}
+#main {
+	vertical-align: bottom;
+	text-decoration: none;
+	font-family: Jura;
+	color: white;
+	font-size: 12px;
+}
+.sites:hover {
+	cursor: pointer;
+	transform: translateY(-7px);
+	background-color: rgba(0,255,255,0.05);
+	box-shadow: 0px 0px 10px 0px rgba(0,255,255,0.20);
+}
