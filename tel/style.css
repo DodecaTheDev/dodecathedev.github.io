@@ -1,0 +1,57 @@
+html, body {
+  flex: content;
+  height: 100%;
+  background-color: #2d2d2d;
+  background-image: linear-gradient(to top, #2d2d2d, #202b2e);
+  background-size: 100%;
+ overflow-x: hidden;
+    font-family: Homespun;
+}
+@font-face {
+  font-family: Homespun;
+  src: url(FNT/homespun.ttf);
+}
+a {
+  text-decoration: none;
+  color: cyan;
+}
+text {
+  font-size: 30px;
+
+  color: white;
+}
+text-major {
+  font-size: 60px;
+  color: cornflowerblue;
+}
+button {
+padding: 1%;
+font-family: Homespun;
+font-size: 30px;
+border-width: 3px;
+border-color: cyan;
+background-color: darkcyan;
+color: cyan;
+border-style: solid;
+transition-duration: 100ms;
+}
+button:hover {
+background-color: cyan;
+color: #2d2d2d;
+cursor: pointer;
+}
+text-credits{
+  color: rgba(255,255,255,0.5);
+  font-size:15px;
+  font-family: Homespun;
+}
+#gray {
+border-color: gray;
+background-color: #2d2d2d;
+color: gray;
+}
+#gray:hover {
+  background-color: gray;
+  color: #2d2d2d;
+
+}
