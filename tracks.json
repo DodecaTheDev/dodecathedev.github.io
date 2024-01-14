@@ -1,0 +1,34 @@
+[
+  {
+    "album": "Expand",
+    "tracks": [
+      "October",
+      "Powerplay",
+      "Vigor Cadence",
+      "Nocturnal",
+      "Implosions"
+    ],
+    "trackURL": [
+      "https://dodecathedev.github.io/albums/expand/october.mp3",
+      "https://dodecathedev.github.io/albums/expand/powerplay.mp3",
+      "https://dodecathedev.github.io/albums/expand/vigorcadence.mp3",
+      "https://dodecathedev.github.io/albums/expand/nocturnal.mp3",
+      "https://dodecathedev.github.io/albums/expand/implosions.mp3"
+    ],
+    "coverURL": "https://dodecathedev.github.io/albums/expand/Cover.png",
+    "finished": true
+  },
+  {
+    "album": "Expand",
+    "tracks": [
+      "Tomb Exploration",
+      "Der Letzte Mann"
+    ],
+    "trackURL": [
+      "https://dodecathedev.github.io/albums/bitblaster/tombexploration.mp3",
+      "https://dodecathedev.github.io/albums/bitblaster/derletztemann.mp3"
+    ],
+    "coverURL": "https://dodecathedev.github.io/albums/bitblaster/Cover.png",
+    "finished": false
+  }
+]
