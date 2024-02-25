@@ -29,15 +29,18 @@
     "album": "Bitblaster",
     "tracks": [
       "Tomb Exploration",
-      "Der Letzte Mann"
+      "Der Letzte Mann",
+      "Machine Babble"
     ],
     "artists": [
+      "Azuritii",
       "Azuritii",
       "Azuritii"
     ],
     "trackURL": [
       "https://dodecathedev.github.io/albums/bitblaster/tombexploration.mp3",
-      "https://dodecathedev.github.io/albums/bitblaster/derletztemann.mp3"
+      "https://dodecathedev.github.io/albums/bitblaster/derletztemann.mp3",
+      "https://dodecathedev.github.io/albums/bitblaster/machinebabble.mp3"
     ],
     "coverURL": "https://dodecathedev.github.io/albums/bitblaster/Cover.png",
     "finished": false
