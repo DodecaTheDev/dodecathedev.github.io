@@ -1,51 +1,162 @@
-[
-  {
-    "album": "Expand",
-    "tracks": [
-      "October",
-      "Powerplay",
-      "Vigor Cadence",
-      "Nocturnal",
-      "Implosions"
-    ],
-    "artists": [
-      "Azuritii",
-      "Azuritii",
-      "Azuritii",
-      "Azuritii",
-      "Azuritii"
-    ],
-    "trackURL": [
-      "https://dodecathedev.github.io/albums/expand/october.mp3",
-      "https://dodecathedev.github.io/albums/expand/powerplay.mp3",
-      "https://dodecathedev.github.io/albums/expand/vigorcadence.mp3",
-      "https://dodecathedev.github.io/albums/expand/nocturnal.mp3",
-      "https://dodecathedev.github.io/albums/expand/implosions.mp3"
-    ],
-    "coverURL": "https://dodecathedev.github.io/albums/expand/Cover.png",
-    "finished": true
-  },
-  {
-    "album": "Bitblaster",
-    "tracks": [
-      "Tomb Exploration",
-      "Der Letzte Mann",
-      "Machine Babble",
-      "Solidus"
-    ],
-    "artists": [
-      "Azuritii",
-      "Azuritii",
-      "Azuritii",
-      "Azuritii"
-    ],
-    "trackURL": [
-      "https://dodecathedev.github.io/albums/bitblaster/tombexploration.mp3",
-      "https://dodecathedev.github.io/albums/bitblaster/derletztemann.mp3",
-      "https://dodecathedev.github.io/albums/bitblaster/machinebabble.mp3",
-      "https://dodecathedev.github.io/albums/bitblaster/solidus.mp3"
-    ],
-    "coverURL": "https://dodecathedev.github.io/albums/bitblaster/Cover.png",
-    "finished": false
-  }
-]
+{
+  "albums": [
+    {
+      "name": "Expand",
+      "completed": true,
+      "count": 5,
+      "length": "10:40",
+      "songs": [
+        {
+          "name": "October",
+          "artists": "Azuritii",
+          "length": 128,
+          "url": "https://dodecathedev.github.io/albums/expand/october.mp3"
+        },
+        {
+          "name": "Powerplay",
+          "artists": "Azuritii",
+          "length": 130,
+          "url": "https://dodecathedev.github.io/albums/expand/powerplay.mp3"
+        },
+        {
+          "name": "Vigor Cadence",
+          "artists": "Azuritii",
+          "length": 159,
+          "url": "https://dodecathedev.github.io/albums/expand/vigorcadence.mp3"
+        },
+        {
+          "name": "Nocturnal",
+          "artists": "Azuritii",
+          "length": 61,
+          "url": "https://dodecathedev.github.io/albums/expand/nocturnal.mp3"
+        },
+        {
+          "name": "Implosions",
+          "artists": "Azuritii",
+          "length": 166,
+          "url": "https://dodecathedev.github.io/albums/expand/implosions.mp3"
+        }
+      ],
+      "cover": "https://dodecathedev.github.io/albums/expand/Cover.png",
+      "platforms": [
+        {
+          "id": "spotify",
+          "url": "https://open.spotify.com/album/1GBY7YZmgDLhUrRgSlXnHe?si=XfIk35RjThCcdNqt8EMolg"
+        },
+        {
+          "id": "bandcamp",
+          "url": "https://azuritii.bandcamp.com/album/expand"
+        },
+        {
+          "id": "youtube",
+          "url": "https://www.youtube.com/playlist?list=PLYyPYWkzndr8kZ9uoSyMowh7RFGSPrPV4"
+        },
+        {
+          "id": "custom-newgrounds",
+          "url": "https://www.newgrounds.com/album/323206/expand-album"
+        }
+      ]
+    },
+    {
+      "name": "Bitblaster",
+      "completed": false,
+      "count": 6,
+      "length": "15:06",
+      "songs": [
+        {
+          "name": "Tomb Exploration",
+          "artists": "Azuritii",
+          "length": 151,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/tombexploration.mp3"
+        },
+        {
+          "name": "Der Letzte Mann",
+          "artists": "Azuritii",
+          "length": 223,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/derletztemann.mp3"
+        },
+        {
+          "name": "Machine Babble",
+          "artists": "Azuritii",
+          "length": 173,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/machinebabble.mp3"
+        },
+        {
+          "name": "Solidus",
+          "artists": "Azuritii",
+          "length": 172,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/solidus.mp3"
+        },
+        {
+          "name": "Oblivion",
+          "artists": "Azuritii",
+          "length": 178,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/oblivion.mp3"
+        },
+        {
+          "name": "Scourge",
+          "artists": "Azuritii",
+          "length": 163,
+          "url": "https://dodecathedev.github.io/albums/bitblaster/scourge.mp3"
+        }
+      ],
+      "cover": "https://dodecathedev.github.io/albums/bitblaster/Cover.png",
+      "platforms": [
+        {
+          "id": "youtube",
+          "url": "https://www.youtube.com/playlist?list=PLYyPYWkzndr-vUcymCxdXua-bIy5jVGmv"
+        },
+        {
+          "id": "custom-newgrounds",
+          "url": "https://www.newgrounds.com/album/338604/bitblaster-album"
+        }
+      ]
+    }
+  ],
+  "singles": [
+    {
+      "name": "Drats!",
+      "artists": "Azuritii",
+      "length": 180,
+      "cover": "https://dodecathedev.github.io/singles/drats!/Cover.png",
+      "platforms": [
+        {
+          "id": "bandcamp",
+          "url": "https://azuritii.bandcamp.com/track/firewall"
+        },
+        {
+          "id": "youtube",
+          "url": "https://www.youtube.com/watch?v=8mFsQV5XZ2s"
+        },
+        {
+          "id": "custom-newgrounds",
+          "url": "https://www.newgrounds.com/audio/listen/1317518"
+        }
+      ]
+    },
+    {
+      "name": "Firewall",
+      "artists": "Azuritii",
+      "length": 140,
+      "cover": "https://dodecathedev.github.io/singles/firewall/Cover.png",
+      "platforms": [
+        {
+          "id": "bandcamp",
+          "url": "https://azuritii.bandcamp.com/track/firewall"
+        },
+        {
+          "id": "youtube",
+          "url": "https://www.youtube.com/watch?v=8mFsQV5XZ2s"
+        },
+        {
+          "id": "custom-newgrounds",
+          "url": "https://www.newgrounds.com/audio/listen/1317518"
+        },
+        {
+          "id": "custom-newgrounds",
+          "url": "https://www.newgrounds.com/audio/listen/1321579"
+        }
+      ]
+    }
+  ]
+}
