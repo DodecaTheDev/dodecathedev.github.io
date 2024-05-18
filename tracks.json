@@ -111,6 +111,19 @@
           "url": "https://www.newgrounds.com/album/338604/bitblaster-album"
         }
       ]
+    },
+    {
+      "name": "Terra Maledicta",
+      "completed": false,
+      "count": 0,
+      "length": "0:00",
+      "songs": [
+        
+      ],
+      "cover": "https://dodecathedev.github.io/albums/terra maledicta/Cover.png",
+      "platforms": [
+        
+      ]
     }
   ],
   "singles": [
