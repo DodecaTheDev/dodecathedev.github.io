@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!-- Created with https://studio.penguinmod.com/PenguinMod-Packager/ -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- We only include this to explicitly loosen the CSP of various packager environments. It does not provide any security. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob:">
+  <title>Sledgehammer Palette Editor</title>
+  <style>
+    body {
+      color: #ffffff;
+      font-family: sans-serif;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+    :root, body.is-fullscreen {
+      background-color: #400c1e;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    h1 {
+      font-weight: normal;
+    }
+    a {
+      color: inherit;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    #app, #loading, #error, #launch {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: default;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #400c1e;
+    }
+    #launch {
+      background-color: rgba(0, 0, 0, 0.7);
+      cursor: pointer;
+    }
+    .green-flag {
+      width: 80px;
+      height: 80px;
+      padding: 16px;
+      border-radius: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      border: 3px solid hsla(0, 100%, 100%, 1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    #loading {
+      
+    }
+    .progress-bar-outer {
+      border: 1px solid currentColor;
+      height: 10px;
+      width: 200px;
+      max-width: 200px;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      width: 0;
+      background-color: currentColor;
+    }
+    .loading-text, noscript {
+      font-weight: normal;
+      font-size: 36px;
+      margin: 0 0 16px;
+    }
+    .loading-image {
+      margin: 0 0 16px;
+    }
+    #error-message, #error-stack {
+      font-family: monospace;
+      max-width: 600px;
+      white-space: pre-wrap;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+    #error-stack {
+      text-align: left;
+      max-height: 200px;
+      overflow: auto;
+    }
+    .control-button {
+      width: 2rem;
+      height: 2rem;
+      padding: 0.375rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+      border: 0;
+      border-radius: 4px;
+    }
+    .control-button:hover {
+      background: #ff207026;
+    }
+    .control-button.active {
+      background: #ff207059;
+    }
+    .fullscreen-button {
+      background: white !important;
+    }
+    .standalone-fullscreen-button {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 0 0 0 4px;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .sc-canvas {
+      cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAWJAAAFiQFtaJ36AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAXbSURBVHgBxVdbTBRXGP7OzLIsO3tVtywsuICgEkmrmIhpGpu0TdPatH1QH0xfGpsmTfrQNI1G0z60D6Zpo74Y0j5YSrWt0RZKvIKatjFGrAUvQAUaAUECAstyca8zO3P6z+JuFly8AfbbTc7OmXPO/53vv5yzwAw4rdIup9Npx/8Fu9Xic1ikNofJ5MVTgJD64KAvAxaDsVUwiBfsZnM5FhjTCGhZWSv1dl1FBbLd7jwmCufsFssmLCCmERAMwgq93bDhRRw7eRIrS0udAvghmyR9PHPsgsBmMX/usFp4bU0N1+Hz+fibb2zk1Kc5rNIeGmLCQsIuSQd0Ah0dHfxmyM8HI3d5KBTi72/bxp02K3dYLLWOeKgsFAGLdCZ7yWIejUb5kaF/+IH+K7wr6OeyLPMvd+/mix12TmOas7Ky8jBPSPWryMA8brcboihiQL6L2/Ik/p4cwI3wKLbv3In9lZUwGo3lmaJ40SFJqzEPSCVgAENufn4+BEHAkBJCT3QCGn3aQz40EZEtW7fi6K81cDgdNIidd5jNb2GOSBKQJEn3rcOdkwMVHGOxCAKagiE5FH/fExnHhbE+VGx4AfVnzqKoqMgKUai9lyFzJyACcUnz8vIRUGWEVCXe3ytPJAffkQP4w38LnuIi1J89h4r160VBYHspe/bT60w8AZIESPWyOAFyQZCMh7VYvH9QCULlPDlhUo3irL+bItaMmt/qsGnzZiYw4UO7Vap1EPCYSBLgnC3T25KSYvhjYfL8lFGFa+iKjk+bFCVyf471YoQpqPzmW2zfsYOKprgRMeWcLTOzGE9CAIwX6o23oBAjSmjaoL7oZJJQAioRuzTZj5vKBHZ9+hm+3rMXmSbTWmY0nLFarc/jMQlQywrMZjO8Xi8GydepmCDZ9bhIh9bAcDxV331vG6qqq+Fa4ioUwU9RhrytbwuPQoDOfyvj3L6seEq9ftpxKvTd6yk5G7rDYzhPLnn59dficeHxeOyUpr9QhnyEh5whUy/DYf0CYi8pWR5/vBW539gtIqDHw2wYkoP43d+DolUr0UAZsqZ8bQZlyD46TSsRT7IHENAEwUV3ALPXuxQRNQafEr5voEzGh2fERipEJsCVIcVJevLyUH3oEKioMcbwAWXI8UV01qWbZ5iiIRTozVJvAUYpA/iMgEugl1TwGC3JZyrdyDZKyDfZsdRkg6bE0HC6Hsfq6nCKjvNwWF8LQ5RivbLF4kEgMJmWAGO8QF8uh6qgXgHTmwcGlEC8PmTTTj2ZVpRIi2DkAlpbW/HV8eOo/r4Ko6Ojek4rnLE+zrU2gfPzMmeHQ6HA4KwKkMFSURSQm5uLYfJlOlhFI8otbryyqBC5pMLI0DAOH/kBVVXf4d/OTsRiMT1A/HSNaKUFrzBoAaYvzZg1A+wdyrCf6GgfTEuA8JxBNEA/B9pjIykSA89Kz+BVZyFWmV3Iolg6eeIEPiH/NjZeJEUDtFmu0MBr0Ph18vcgzVETyUfFLQLErihcbCPjQ7MpIJAvV9hsNrhcLowM9CKP5H3JXoB1tlzk0G6bm5rwxc/70NBQj/7bt/V5GqnWDa5dB2ddDDyUMEoyqPTcqUJtCwTlLupKX0ASBEgaN+3CtHxF/DqILUtK4TKa0dfbhzqS+OjRI7h29eq9HXEfNTfIQAvZ803JxKdeaRjQOG/PCIdb/XRk4BFhyAByKVfEsrIyTIyPo5mk/fHgQdSfPg1N0/Sl9dzroR02k+HuabM5n1RJARVoIokH8AQwkIkcqhLCpcZGrF2zOhHFtCbuUAVsogrZTgSTqUF+lTnUfi7wy3cDUZ2QgjnAwAQhX//R0tKiNwGS+S/aaQf99glTURy3S0RHGZ0/zBjsmhjHOOYJBgFajsZZG5lpJcMUUIglXhIZykntuqwJHVRU+vUuhDCvMFDFqMlgPMUok8G07hhXbwSDsq7EnCR+KAFB08xUyDW91DNN65yIRC5T/zzv8wGgf8EFdCF142n89UqD/wDjHoYcQp/ukQAAAABJRU5ErkJggg==) 0 0, auto;
+    }
+    .sc-monitor-root[data-opcode^="data_"] .sc-monitor-value-color {
+      background-color: #ff8c1a;
+    }
+    .sc-monitor-row-value-outer {
+      background-color: #fc662c;
+    }
+    .sc-monitor-row-value-editing .sc-monitor-row-value-outer {
+      background-color: #e25b27;
+    }
+    
+  </style>
+  <meta name="theme-color" content="#400c1e">
+  <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyNTkuNzYwNDciIGhlaWdodD0iMjU5Ljc2MDQ3IiB2aWV3Qm94PSIwLDAsMjU5Ljc2MDQ3LDI1OS43NjA0NyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIzMTIuMDc1MDUiIHkxPSI1Ni43NzMxNCIgeDI9IjEzMS4zNDYwNCIgeTI9IjIzNy41MDIxNiIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJjb2xvci0xIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNmZjIwNzAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMwMGZmZmYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTEwLjExOTc2LC01MC4xMTk3NikiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbD0idXJsKCNjb2xvci0xKSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9IiMyZjAwNDAiIHN0cm9rZS13aWR0aD0iNC41IiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHBhdGggZD0iTTExMi4zNjk3Nyw4NC4yNzczMmMwLC0xNy41OTkwMSAxNC4zMDg1NSwtMzEuOTA3NTYgMzEuOTA3NTYsLTMxLjkwNzU2bDE0My41ODQwMSwwYzE3LjU5OTAxLDAgMzEuOTA3NTYsMTQuMzA4NTUgMzEuOTA3NTYsMzEuOTA3NTZ2MzEuOTA3NTZjMCwxNy41OTkwMSAtMTQuMzA4NTUsMzEuOTA3NTYgLTMxLjkwNzU2LDMxLjkwNzU2bC0xNDMuNTg0MDIsMGMtMTcuNTk5MDEsMCAtMzEuOTA3NTYsLTE0LjMwODU1IC0zMS45MDc1NiwtMzEuOTA3NTZ6TTE5Mi4xMzg2NiwyMjcuODYxMzRjMCwtOC44MjQ0MyA3LjEyOTM1LC0xNS45NTM3OCAxNS45NTM3OCwtMTUuOTUzNzhsMCwtNy45NzY4OWMwLC0yMi4wMzYxNiAxNy44NDgyOSwtMzkuODg0NDUgMzkuODg0NDUsLTM5Ljg4NDQ1bDcxLjc5MjAxLDBjOC44MjQ0MywwIDE1Ljk1Mzc4LC03LjEyOTM1IDE1Ljk1Mzc4LC0xNS45NTM3OGwwLC0xNS45NTM3OGwwLC00NS4xMTkyOGMxOC41OTYxMiw2LjU4MDk0IDMxLjkwNzU2LDI0LjI3OTY2IDMxLjkwNzU2LDQ1LjExOTI5djE1Ljk1Mzc4YzAsMjYuNDIzNDUgLTIxLjQzNzg5LDQ3Ljg2MTM0IC00Ny44NjEzNCw0Ny44NjEzNGwtNzEuNzkyMDEsMGMtNC4zODcyOSwwIC03Ljk3Njg5LDMuNTg5NiAtNy45NzY4OSw3Ljk3Njg5djcuOTc2ODljOC44MjQ0MywwIDE1Ljk1Mzc4LDcuMTI5MzUgMTUuOTUzNzgsMTUuOTUzNzhsMCw2My44MTUxMmMwLDguODI0NDMgLTcuMTI5MzUsMTUuOTUzNzggLTE1Ljk1Mzc4LDE1Ljk1Mzc4aC0zMS45MDc1NmMtOC44MjQ0MywwIC0xNS45NTM3OCwtNy4xMjkzNSAtMTUuOTUzNzgsLTE1Ljk1Mzc4eiIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjEyOS44ODAyMzcyNTg1OTQzMjoxMjkuODgwMjM1NDkwODI3My0tPg==">
+</head>
+<body>
+  <div id="app"></div>
+
+  <div id="launch" class="screen" hidden title="Click to start">
+    <div class="green-flag">
+      <svg viewBox="0 0 16.63 17.5" width="42" height="44">
+        <defs><style>.cls-1,.cls-2{fill:#007AF4;stroke:#003080;stroke-linecap:round;stroke-linejoin:round;}.cls-2{stroke-width:1.5px;}</style></defs>
+        <path class="cls-1" d="M.75,2A6.44,6.44,0,0,1,8.44,2h0a6.44,6.44,0,0,0,7.69,0V12.4a6.44,6.44,0,0,1-7.69,0h0a6.44,6.44,0,0,0-7.69,0"/>
+        <line class="cls-2" x1="0.75" y1="16.75" x2="0.75" y2="0.75"/>
+      </svg>
+    </div>
+  </div>
+
+  <div id="loading" class="screen">
+    <noscript>Enable JavaScript</noscript>
+    <h1 class="loading-text">Loading Palette Editor</h1>
+    
+    
+  </div>
+
+  <div id="error" class="screen" hidden>
+    <h1>Error</h1>
+    <details>
+      <summary id="error-message"></summary>
+      <p id="error-stack"></p>
+    </details>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    const appElement = document.getElementById('app');
+    const launchScreen = document.getElementById('launch');
+    const loadingScreen = document.getElementById('loading');
+    const loadingInner = document.getElementById('loading-inner');
+    const errorScreen = document.getElementById('error');
+    const errorScreenMessage = document.getElementById('error-message');
+    const errorScreenStack = document.getElementById('error-stack');
+
+    const handleError = (error) => {
+      console.error(error);
+      if (!errorScreen.hidden) return;
+      errorScreen.hidden = false;
+      errorScreenMessage.textContent = '' + error;
+      let debug = error && error.stack || 'no stack';
+      debug += '\nUser agent: ' + navigator.userAgent;
+      errorScreenStack.textContent = debug;
+    };
+    const setProgress = (progress) => {
+      if (loadingInner) loadingInner.style.width = progress * 100 + '%';
+    };
+    const interpolate = (a, b, t) => a + t * (b - a);
+
+    try {
+      setProgress(0.1);
+
+      const scaffolding = new Scaffolding.Scaffolding();
+      scaffolding.width = 640;
+      scaffolding.height = 360;
+      scaffolding.resizeMode = "preserve-ratio";
+      scaffolding.editableLists = false;
+      scaffolding.usePackagedRuntime = true;
+      scaffolding.setup();
+      scaffolding.appendTo(appElement);
+
+      const vm = scaffolding.vm;
+      window.scaffolding = scaffolding;
+      window.vm = scaffolding.vm;
+      window.Scratch = {
+        vm,
+        renderer: vm.renderer,
+        audioEngine: vm.runtime.audioEngine,
+        bitmapAdapter: vm.runtime.v2BitmapAdapter,
+        videoProvider: vm.runtime.ioDevices.video.provider
+      };
+
+      scaffolding.setUsername("player####".replace(/#/g, () => Math.floor(Math.random() * 10)));
+      scaffolding.setAccentColor("#ff2070");
+
+      try {
+        scaffolding.addCloudProvider(new Scaffolding.Cloud.WebSocketProvider(["wss://clouddata.turbowarp.org","wss://clouddata.turbowarp.xyz"], "p4-@Palette Editor.pmp"));
+      } catch (error) {
+        console.error(error);
+      }
+
+      vm.setTurboMode(false);
+      if (vm.setInterpolation) vm.setInterpolation(true);
+      if (vm.setFramerate) vm.setFramerate(30);
+      if (vm.renderer.setUseHighQualityRender) vm.renderer.setUseHighQualityRender(true);
+      if (vm.setRuntimeOptions) vm.setRuntimeOptions({
+        fencing: true,
+        miscLimits: true,
+        maxClones: 300,
+        dangerousOptimizations: false
+      });
+      if (vm.setCompilerOptions) vm.setCompilerOptions({
+        enabled: true,
+        warpTimer: false
+      });
+      if (vm.renderer.setMaxTextureDimension) vm.renderer.setMaxTextureDimension(2048);
+
+      if (typeof ScaffoldingAddons !== 'undefined') {
+        ScaffoldingAddons.run(scaffolding, {"gamepad":false,"pointerlock":false,"specialCloudBehaviors":false,"unsafeCloudBehaviors":false,"pause":false});
+      }
+
+      scaffolding.setExtensionSecurityManager({
+        getSandboxMode: () => 'unsandboxed',
+        canLoadExtensionFromProject: () => true
+      });
+      for (const extension of ["data:text/javascript;,(function(Scratch)%20%7B%20%2F%2F%20Name%3A%20Text%0A%2F%2F%20ID%3A%20strings%0A%2F%2F%20Description%3A%20Manipulate%20characters%20and%20text.%0A%2F%2F%20Original%3A%20CST1229%20%3Chttps%3A%2F%2Fscratch.mit.edu%2Fusers%2FCST1229%2F%3E%0A%2F%2F%20License%3A%20MIT%20AND%20MPL-2.0%0A%0A%2F*%20generated%20l10n%20code%20*%2FScratch.translate.setup(%7B%22es%22%3A%7B%22_Text%22%3A%22Texto%22%7D%2C%22fi%22%3A%7B%22_Text%22%3A%22Teksti%22%7D%2C%22it%22%3A%7B%22_Text%22%3A%22Testo%22%7D%2C%22ja%22%3A%7B%22_Text%22%3A%22%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%22%7D%2C%22ko%22%3A%7B%22_Text%22%3A%22%ED%85%8D%EC%8A%A4%ED%8A%B8%22%7D%2C%22nb%22%3A%7B%22_Text%22%3A%22Tekst%22%7D%2C%22nl%22%3A%7B%22_Exactly%20Title%20Case%22%3A%22Alleen%20Beginhoofdletters%22%2C%22_MiXeD%20CaSe%22%3A%22DoOr%20eLkAaR%22%2C%22_Text%22%3A%22Tekst%22%2C%22_Title%20Case%22%3A%22Alles%20Met%20Beginhoofdletter%22%2C%22_UPPERCASE%22%3A%22HOOFDLETTERS%22%2C%22_%5BSTRING%5D%20matches%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%3A%22%5BSTRING%5D%20komt%20overeen%20met%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%2C%22_convert%20%5BSTRING%5D%20to%20%5BTEXTCASE%5D%22%3A%22zet%20%5BSTRING%5D%20om%20naar%20%5BTEXTCASE%5D%22%2C%22_count%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22aantal%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%2C%22_count%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%22%3A%22aantal%20overeenkomsten%20van%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20met%20%5BSTRING%5D%22%2C%22_index%20of%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22positie%20van%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%2C%22_is%20%5BOPERAND1%5D%20identical%20to%20%5BOPERAND2%5D%3F%22%3A%22%5BOPERAND1%5D%20identiek%20aan%20%5BOPERAND2%5D%3F%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20matched%20by%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%22%3A%22item%20%5BITEM%5D%20van%20%5BSTRING%5D%20waarmee%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20overeenkomt%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20split%20by%20%5BSPLIT%5D%22%3A%22item%20%5BITEM%5D%20van%20%5BSTRING%5D%20gesplitst%20door%20%5BSPLIT%5D%22%2C%22_letters%20%5BLETTER1%5D%20to%20%5BLETTER2%5D%20of%20%5BSTRING%5D%22%3A%22letters%20%5BLETTER1%5D%20t%2Fm%20%5BLETTER2%5D%20van%20%5BSTRING%5D%22%2C%22_lowercase%22%3A%22kleine%20letters%22%2C%22_repeat%20%5BSTRING%5D%20%5BREPEAT%5D%20times%22%3A%22herhaal%20%5BSTRING%5D%20%5BREPEAT%5D%20keer%22%2C%22_replace%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22vervang%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%20door%20%5BREPLACE%5D%22%2C%22_replace%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22vervang%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%20door%20%5BREPLACE%5D%22%2C%22_unicode%20%5BNUM%5D%20as%20letter%22%3A%22unicode%20%5BNUM%5D%20als%20letter%22%2C%22_unicode%20of%20%5BSTRING%5D%22%3A%22unicode%20van%20%5BSTRING%5D%22%7D%2C%22pt-br%22%3A%7B%22_Text%22%3A%22Texto%22%7D%2C%22ru%22%3A%7B%22_Exactly%20Title%20Case%22%3A%22%D0%9D%D0%B0%D1%81%D1%82%D0%BE%D1%8F%D1%89%D0%B8%D0%B9%20%D0%A2%D0%B0%D0%B9%D1%82%D0%BB%20%D0%9A%D0%B5%D0%B9%D1%81%22%2C%22_MiXeD%20CaSe%22%3A%22%D0%A1%D0%BC%D0%95%D1%88%D0%90%D0%BD%D0%9D%D1%8B%D0%99%20%D0%9A%D0%B5%D0%99%D1%81%22%2C%22_Text%22%3A%22%D0%A2%D0%B5%D0%BA%D1%81%D1%82%22%2C%22_Title%20Case%22%3A%22%D0%A2%D0%B0%D0%B9%D1%82%D0%BB%20%D0%9A%D0%B5%D0%B9%D1%81%22%2C%22_UPPERCASE%22%3A%22%D0%92%D0%95%D0%A0%D0%A5%D0%9D%D0%98%D0%99%20%D0%A0%D0%95%D0%93%D0%98%D0%A1%D0%A2%D0%A0%22%2C%22_%5BSTRING%5D%20matches%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%3A%22%5BSTRING%5D%20%D1%81%D0%BE%D0%B2%D0%BF%D0%B0%D0%B4%D0%B0%D0%B5%D1%82%20%D1%81%20regex'%D0%BE%D0%BC%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%2C%22_convert%20%5BSTRING%5D%20to%20%5BTEXTCASE%5D%22%3A%22%D1%81%D0%BA%D0%BE%D0%BD%D0%B2%D0%B5%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C%20%D1%81%D1%82%D1%80%D0%BE%D0%BA%D1%83%20%5BSTRING%5D%20%D0%B2%20%5BTEXTCASE%5D%22%2C%22_count%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22%D0%BA%D0%BE%D0%BB%D0%B8%D1%87%D0%B5%D1%81%D1%82%D0%B2%D0%BE%20%5BSUBSTRING%5D%20%D0%B2%20%5BSTRING%5D%22%2C%22_count%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%22%3A%22%D0%BF%D0%BE%D1%81%D1%87%D0%B8%D1%82%D0%B0%D1%82%D1%8C%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20%D0%B2%20%5BSTRING%5D%22%2C%22_index%20of%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%20%5BSUBSTRING%5D%20%D0%B2%20%5BSTRING%5D%22%2C%22_is%20%5BOPERAND1%5D%20identical%20to%20%5BOPERAND2%5D%3F%22%3A%22%5BOPERAND1%5D%20%D0%B8%D0%B4%D0%B5%D0%BD%D1%82%D0%B8%D1%87%D0%BD%D1%8B%D0%B9%20%D1%81%20%5BOPERAND2%5D%3F%22%2C%22_is%20%5BSTRING%5D%20%5BTEXTCASE%5D%3F%22%3A%22%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B0%20%5BSTRING%5D%20%D1%8D%D1%82%D0%BE%20%5BTEXTCASE%5D%3F%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20matched%20by%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%22%3A%22%D0%BF%D1%80%D0%B5%D0%B4%D0%BC%D0%B5%D1%82%20%5BITEM%5D%20%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8%20%5BSTRING%5D%20%D1%81%D0%BE%D0%B2%D0%BF%D0%B0%D0%B4%D0%B0%D1%8E%D1%89%D0%B8%D0%B9%20regex'%D0%BE%D0%BC%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20split%20by%20%5BSPLIT%5D%22%3A%22%D0%BF%D1%80%D0%B5%D0%B4%D0%BC%D0%B5%D1%82%20%5BITEM%5D%20%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8%20%5BSTRING%5D%20%D1%80%D0%B0%D1%81%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D1%91%D0%BD%D0%BD%D1%8B%D0%B9%20%5BSPLIT%5D%22%2C%22_letters%20%5BLETTER1%5D%20to%20%5BLETTER2%5D%20of%20%5BSTRING%5D%22%3A%22%D0%B1%D1%83%D0%BA%D0%B2%D1%8B%20%D1%81%20%5BLETTER1%5D%20%D0%B4%D0%BE%20%5BLETTER2%5D%20%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8%20%5BSTRING%5D%22%2C%22_lowercase%22%3A%22%D0%BD%D0%B8%D0%B6%D0%BD%D0%B8%D0%B9%20%D1%80%D0%B5%D0%B3%D0%B8%D1%81%D1%82%D1%80%22%2C%22_repeat%20%5BSTRING%5D%20%5BREPEAT%5D%20times%22%3A%22%D0%BF%D0%BE%D0%B2%D1%82%D0%BE%D1%80%D0%B8%D1%82%D1%8C%20%5BSTRING%5D%20%5BREPEAT%5D%20%D1%80%D0%B0%D0%B7%22%2C%22_replace%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22%D0%B7%D0%B0%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C%20%5BSUBSTRING%5D%20%D0%B2%20%5BSTRING%5D%20%D0%BD%D0%B0%20%5BREPLACE%5D%22%2C%22_replace%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22%D0%B7%D0%B0%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20%D0%B2%20%5BSTRING%5D%20%D0%BD%D0%B0%20%5BREPLACE%5D%22%2C%22_unicode%20%5BNUM%5D%20as%20letter%22%3A%22%D1%8E%D0%BD%D0%B8%D0%BA%D0%BE%D0%B4%20%5BNUM%5D%20%D0%BA%D0%B0%D0%BA%20%D0%B1%D1%83%D0%BA%D0%B2%D1%83%22%2C%22_unicode%20of%20%5BSTRING%5D%22%3A%22%D1%8E%D0%BD%D0%B8%D0%BA%D0%BE%D0%B4%20%5BSTRING%5D%22%7D%2C%22tr%22%3A%7B%22_Text%22%3A%22Metin%22%7D%2C%22uk%22%3A%7B%22_Text%22%3A%22%D0%A2%D0%B5%D0%BA%D1%81%D1%82%22%7D%2C%22zh-cn%22%3A%7B%22_Exactly%20Title%20Case%22%3A%22%E7%B2%BE%E7%A1%AE%E6%A0%87%E9%A2%98%22%2C%22_MiXeD%20CaSe%22%3A%22%E6%B7%B7%E5%90%88%E5%A4%A7%E5%B0%8F%E5%86%99%22%2C%22_Text%22%3A%22%E6%96%87%E6%9C%AC%22%2C%22_Title%20Case%22%3A%22%E6%A0%87%E9%A2%98%22%2C%22_UPPERCASE%22%3A%22%E5%A4%A7%E5%86%99%22%2C%22_%5BSTRING%5D%20matches%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%3A%22%5BSTRING%5D%20%E6%BB%A1%E8%B6%B3%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%EF%BC%9F%22%2C%22_convert%20%5BSTRING%5D%20to%20%5BTEXTCASE%5D%22%3A%22%E8%BD%AC%E6%8D%A2%5BSTRING%5D%E4%B8%BA%5BTEXTCASE%5D%22%2C%22_count%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22%5BSTRING%5D%E4%B8%AD%5BSUBSTRING%5D%E7%9A%84%E6%95%B0%E9%87%8F%22%2C%22_count%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%22%3A%22%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20%E5%9C%A8%20%5BSTRING%5D%20%E5%8C%B9%E9%85%8D%E7%9A%84%E6%95%B0%E9%87%8F%22%2C%22_index%20of%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%3A%22%5BSTRING%5D%E4%B8%AD%5BSUBSTRING%5D%E7%9A%84%E4%BD%8D%E7%BD%AE%22%2C%22_is%20%5BOPERAND1%5D%20identical%20to%20%5BOPERAND2%5D%3F%22%3A%22%5BOPERAND1%5D%3D%3D%3D%5BOPERAND2%5D%22%2C%22_is%20%5BSTRING%5D%20%5BTEXTCASE%5D%3F%22%3A%22%5BSTRING%5D%E6%98%AF%5BTEXTCASE%5D%EF%BC%9F%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20matched%20by%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%22%3A%22%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%E5%8C%B9%E9%85%8D%5BSTRING%5D%E7%9A%84%E7%AC%AC%5BITEM%5D%E4%B8%AA%E5%86%85%E5%AE%B9%22%2C%22_item%20%5BITEM%5D%20of%20%5BSTRING%5D%20split%20by%20%5BSPLIT%5D%22%3A%22%E4%BB%A5%5BSPLIT%5D%E5%88%86%E5%89%B2%5BSTRING%5D%E5%90%8E%E7%9A%84%E7%AC%AC%5BITEM%5D%E9%A1%B9%22%2C%22_letters%20%5BLETTER1%5D%20to%20%5BLETTER2%5D%20of%20%5BSTRING%5D%22%3A%22%5BSTRING%5D%E7%9A%84%E7%AC%AC%5BLETTER1%5D%E5%88%B0%E7%AC%AC%5BLETTER2%5D%E4%BD%8D%22%2C%22_lowercase%22%3A%22%E5%B0%8F%E5%86%99%22%2C%22_repeat%20%5BSTRING%5D%20%5BREPEAT%5D%20times%22%3A%22%E9%87%8D%E5%A4%8D%5BREPEAT%5D%E4%B8%AA%5BSTRING%5D%22%2C%22_replace%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22%E6%9B%BF%E6%8D%A2%5BSTRING%5D%E4%B8%AD%E7%9A%84%5BSUBSTRING%5D%E4%B8%BA%5BREPLACE%5D%22%2C%22_replace%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%3A%22%E4%BD%BF%E7%94%A8%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20%E5%9C%A8%20%5BSTRING%5D%E4%B8%AD%E6%9B%BF%E6%8D%A2%E4%B8%BA%20%20%5BREPLACE%5D%22%2C%22_unicode%20%5BNUM%5D%20as%20letter%22%3A%22unicode%5BNUM%5D%E5%AF%B9%E5%BA%94%E7%9A%84%E5%AD%97%E7%AC%A6%22%2C%22_unicode%20of%20%5BSTRING%5D%22%3A%22%5BSTRING%5D%E7%9A%84unicode%22%7D%7D)%3B%2F*%20end%20generated%20l10n%20code%20*%2F(function%20(Scratch)%20%7B%0A%20%20%22use%20strict%22%3B%0A%0A%20%20const%20CaseParam%20%3D%20%7B%0A%20%20%20%20LOWERCASE%3A%20%22lowercase%22%2C%0A%20%20%20%20UPPERCASE%3A%20%22uppercase%22%2C%0A%20%20%20%20MIXEDCASE%3A%20%22mixedcase%22%2C%0A%20%20%20%20TITLECASE%3A%20%22titlecase%22%2C%0A%20%20%20%20EXACTTITLECASE%3A%20%22exacttitlecase%22%2C%0A%20%20%7D%3B%0A%0A%20%20let%20splitCache%3B%0A%20%20let%20matchCache%3B%0A%0A%20%20class%20StringsExt%20%7B%0A%20%20%20%20constructor()%20%7B%7D%0A%0A%20%20%20%20_initCaseMenu()%20%7B%0A%20%20%20%20%20%20return%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22lowercase%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20description%3A%20%22If%20your%20language%20has%20lowercase%2C%20style%20it%20accordingly%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20value%3A%20CaseParam.LOWERCASE%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22UPPERCASE%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20description%3A%20%22If%20your%20language%20has%20uppercase%2C%20style%20it%20accordingly%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20value%3A%20CaseParam.UPPERCASE%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22Title%20Case%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22If%20your%20language%20has%20Title%20Case%2C%20style%20it%20accordingly.%20'Abc'%20is%20title%20case%20and%20exactly%20title%20case%20but%20'ABC'%20is%20only%20title%20case.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20value%3A%20CaseParam.TITLECASE%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22Exactly%20Title%20Case%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22If%20your%20language%20has%20Title%20Case%2C%20style%20it%20accordingly.%20'Abc'%20is%20title%20case%20and%20exactly%20title%20case%20but%20'ABC'%20is%20only%20title%20case.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20value%3A%20CaseParam.EXACTTITLECASE%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22MiXeD%20CaSe%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22If%20your%20language%20has%20mixed%20case%2C%20style%20it%20accordingly%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20value%3A%20CaseParam.MIXEDCASE%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%5D%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20getInfo()%20%7B%0A%20%20%20%20%20%20return%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20id%20%22text%22%20would%20conflict%20with%20Scratch%20Lab's%20Animated%20Text%20(lab%2Ftext.js)%0A%20%20%20%20%20%20%20%20id%3A%20%22strings%22%2C%0A%20%20%20%20%20%20%20%20name%3A%20Scratch.translate(%22Text%22)%2C%0A%20%20%20%20%20%20%20%20blocks%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22letters_of%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22letters%20%5BLETTER1%5D%20to%20%5BLETTER2%5D%20of%20%5BSTRING%5D%22%0A%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20LETTER1%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%202%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20LETTER2%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%204%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22split%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%22item%20%5BITEM%5D%20of%20%5BSTRING%5D%20split%20by%20%5BSPLIT%5D%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20ITEM%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%203%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20SPLIT%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22p%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22count%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22count%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22Counts%20how%20many%20time%20%5BSUBSTRING%5D%20appears%20in%20%5BSTRING%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20SUBSTRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22p%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22indexof%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22index%20of%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%20%22Reports%20where%20%5BSUBSTRING%5D%20appears%20in%20%5BSTRING%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20SUBSTRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22p%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%22---%22%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22replace%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22replace%20%5BSUBSTRING%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%0A%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20SUBSTRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22world%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22Hello%20world!%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REPLACE%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22fellow%20Scratchers%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22repeat%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%22repeat%20%5BSTRING%5D%20%5BREPEAT%5D%20times%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%20%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REPEAT%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%203%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%22---%22%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22unicodeof%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%22unicode%20of%20%5BSTRING%5D%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22A%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22unicodefrom%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%22unicode%20%5BNUM%5D%20as%20letter%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20NUM%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%2065%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%22---%22%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22replaceRegex%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22replace%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%20with%20%5BREPLACE%5D%22%0A%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REGEX%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20FLAGS%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22g%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22Hello%20world!%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REPLACE%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22%24%26%24%26%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22matchRegex%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22item%20%5BITEM%5D%20of%20%5BSTRING%5D%20matched%20by%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22%2F%5BREGEX%5D%2F%20is%20supposed%20to%20match%20the%20syntax%20that%20some%20actual%20programming%20languages%20used%20for%20regular%20expressions.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20ITEM%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.NUMBER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%201%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22Hello%20world!%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REGEX%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22(.)%20(.%7B2%7D)%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20FLAGS%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22g%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22countRegex%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22count%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%20in%20%5BSTRING%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22%2F%5BREGEX%5D%2F%20is%20supposed%20to%20match%20the%20syntax%20that%20some%20actual%20programming%20languages%20used%20for%20regular%20expressions.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22Hello%20world!%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REGEX%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22%5BAEIOU%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20FLAGS%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22i%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22testRegex%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.BOOLEAN%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22%5BSTRING%5D%20matches%20regex%20%2F%5BREGEX%5D%2F%5BFLAGS%5D%3F%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22%2F%5BREGEX%5D%2F%20is%20supposed%20to%20match%20the%20syntax%20that%20some%20actual%20programming%20languages%20used%20for%20regular%20expressions.%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22Hello%20world!%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20REGEX%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22hello%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20FLAGS%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22i%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%22---%22%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22identical%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.BOOLEAN%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%22is%20%5BOPERAND1%5D%20identical%20to%20%5BOPERAND2%5D%3F%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20OPERAND1%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22A%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20OPERAND2%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22a%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%22---%22%2C%0A%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22isCase%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.BOOLEAN%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22is%20%5BSTRING%5D%20%5BTEXTCASE%5D%3F%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%20%22Example%20block%20context%3A%20%3Cis%20%5Bhello%5D%20%5Blowercase%5D%20%3F%3E%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20TEXTCASE%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20menu%3A%20%22textCase%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20CaseParam.LOWERCASE%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20opcode%3A%20%22toCase%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20blockType%3A%20Scratch.BlockType.REPORTER%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20text%3A%20Scratch.translate(%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20default%3A%20%22convert%20%5BSTRING%5D%20to%20%5BTEXTCASE%5D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20description%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22Example%20block%20context%3A%20(convert%20%5BHELLO%5D%20to%20%5Blowercase%5D)%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arguments%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20STRING%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20%22apple%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20TEXTCASE%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20type%3A%20Scratch.ArgumentType.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20menu%3A%20%22textCase%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20defaultValue%3A%20CaseParam.UPPERCASE%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20menus%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20textCase%3A%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20acceptReporters%3A%20true%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20items%3A%20this._initCaseMenu()%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20identical(args%2C%20util)%20%7B%0A%20%20%20%20%20%20%2F%2F%20Purposefully%20no%20casting%2C%20because%0A%20%20%20%20%20%20%2F%2F%20types%20ARE%20differentiated%20in%20this%20block%0A%20%20%20%20%20%20return%20args.OPERAND1%20%3D%3D%3D%20args.OPERAND2%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20unicodeof(args%2C%20util)%20%7B%0A%20%20%20%20%20%20const%20chars%20%3D%20Array.from(args.STRING.toString())%3B%0A%20%20%20%20%20%20return%20chars.map((char)%20%3D%3E%20char.charCodeAt(0)).join(%22%20%22)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20unicodefrom(args%2C%20util)%20%7B%0A%20%20%20%20%20%20return%20String.fromCharCode(Number(args.NUM)%20%7C%7C%200)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20letters_of(args%2C%20util)%20%7B%0A%20%20%20%20%20%20args.STRING%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20args.LETTER1%20%3D%20Number(args.LETTER1)%20%7C%7C%200%3B%0A%20%20%20%20%20%20args.LETTER2%20%3D%20Number(args.LETTER2)%20%7C%7C%200%3B%0A%20%20%20%20%20%20return%20args.STRING.substring(args.LETTER1%20-%201%2C%20args.LETTER2)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20_caseInsensitiveRegex(str)%20%7B%0A%20%20%20%20%20%20return%20new%20RegExp(str.replaceAll(%2F%5B%5Ea-zA-Z0-9%5D%2Fg%2C%20%22%5C%5C%24%26%22)%2C%20%22gi%22)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20split(args%2C%20util)%20%7B%0A%20%20%20%20%20%20args.STRING%20%3D%20(args.STRING%20%3F%3F%20%22%22).toString()%3B%0A%20%20%20%20%20%20args.SPLIT%20%3D%20(args.SPLIT%20%3F%3F%20%22%22).toString()%3B%0A%20%20%20%20%20%20args.ITEM%20%3D%20Number(args.ITEM)%20%7C%7C%200%3B%0A%0A%20%20%20%20%20%20%2F%2F%20Cache%20the%20last%20split%0A%20%20%20%20%20%20if%20(%0A%20%20%20%20%20%20%20%20!(%0A%20%20%20%20%20%20%20%20%20%20splitCache%20%26%26%0A%20%20%20%20%20%20%20%20%20%20splitCache.string%20%3D%3D%3D%20args.STRING%20%26%26%0A%20%20%20%20%20%20%20%20%20%20splitCache.split%20%3D%3D%3D%20args.SPLIT%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20)%20%7B%0A%20%20%20%20%20%20%20%20const%20regex%20%3D%20this._caseInsensitiveRegex(args.SPLIT)%3B%0A%0A%20%20%20%20%20%20%20%20splitCache%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20string%3A%20args.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20split%3A%20args.SPLIT%2C%0A%20%20%20%20%20%20%20%20%20%20arr%3A%20args.STRING.split(regex)%2C%0A%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20return%20splitCache.arr%5Bargs.ITEM%20-%201%5D%20%7C%7C%20%22%22%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20count(args%2C%20util)%20%7B%0A%20%20%20%20%20%20%2F%2F%20Fill%20cache%0A%20%20%20%20%20%20this.split(%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20SPLIT%3A%20args.SUBSTRING%2C%0A%20%20%20%20%20%20%20%20%20%20STRING%3A%20args.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20ITEM%3A%200%2C%0A%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20util%0A%20%20%20%20%20%20)%3B%0A%20%20%20%20%20%20return%20splitCache.arr.length%20-%201%20%7C%7C%200%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20replace(args%2C%20util)%20%7B%0A%20%20%20%20%20%20args.STRING%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20args.SUBSTRING%20%3D%20args.SUBSTRING.toString()%3B%0A%0A%20%20%20%20%20%20args.REPLACE%20%3D%20args.REPLACE.toString()%3B%0A%0A%20%20%20%20%20%20const%20regex%20%3D%20this._caseInsensitiveRegex(args.SUBSTRING)%3B%0A%0A%20%20%20%20%20%20return%20args.STRING.replace(regex%2C%20args.REPLACE)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20indexof(args%2C%20util)%20%7B%0A%20%20%20%20%20%20%2F%2F%20.toLowerCase()%20for%20case%20insensitivity%0A%20%20%20%20%20%20args.STRING%20%3D%20(args.STRING%20%3F%3F%20%22%22).toString().toLowerCase()%3B%0A%20%20%20%20%20%20args.SUBSTRING%20%3D%20(args.SUBSTRING%20%3F%3F%20%22%22).toString().toLowerCase()%3B%0A%0A%20%20%20%20%20%20%2F%2F%20Since%20both%20arguments%20are%20casted%20to%20strings%20beforehand%2C%0A%20%20%20%20%20%20%2F%2F%20we%20don't%20have%20to%20worry%20about%20type%20differences%0A%20%20%20%20%20%20%2F%2F%20like%20in%20the%20item%20number%20of%20in%20list%20block%0A%20%20%20%20%20%20const%20found%20%3D%20args.STRING.indexOf(args.SUBSTRING)%3B%0A%0A%20%20%20%20%20%20%2F%2F%20indexOf%20returns%20-1%20when%20no%20matches%20are%20found%2C%20we%20can%20just%20%2B1%0A%20%20%20%20%20%20return%20found%20%2B%201%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20repeat(args%2C%20util)%20%7B%0A%20%20%20%20%20%20args.STRING%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20args.REPEAT%20%3D%20Number(args.REPEAT)%20%7C%7C%200%3B%0A%20%20%20%20%20%20return%20args.STRING.repeat(args.REPEAT)%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20replaceRegex(args%2C%20util)%20%7B%0A%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20args.STRING%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20%20%20args.REPLACE%20%3D%20args.REPLACE.toString()%3B%0A%20%20%20%20%20%20%20%20args.REGEX%20%3D%20args.REGEX.toString()%3B%0A%20%20%20%20%20%20%20%20args.FLAGS%20%3D%20args.FLAGS.toString()%3B%0A%0A%20%20%20%20%20%20%20%20return%20args.STRING.replace(%0A%20%20%20%20%20%20%20%20%20%20new%20RegExp(args.REGEX%2C%20args.FLAGS)%2C%0A%20%20%20%20%20%20%20%20%20%20args.REPLACE%0A%20%20%20%20%20%20%20%20)%3B%0A%20%20%20%20%20%20%7D%20catch%20(e)%20%7B%0A%20%20%20%20%20%20%20%20console.error(e)%3B%0A%20%20%20%20%20%20%20%20return%20%22%22%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20matchRegex(args%2C%20util)%20%7B%0A%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20args.STRING%20%3D%20(args.STRING%20%3F%3F%20%22%22).toString()%3B%0A%20%20%20%20%20%20%20%20args.REGEX%20%3D%20(args.REGEX%20%3F%3F%20%22%22).toString()%3B%0A%20%20%20%20%20%20%20%20args.FLAGS%20%3D%20(args.FLAGS%20%3F%3F%20%22%22).toString()%3B%0A%20%20%20%20%20%20%20%20args.ITEM%20%3D%20Number(args.ITEM)%20%7C%7C%200%3B%0A%0A%20%20%20%20%20%20%20%20%2F%2F%20Cache%20the%20last%20matched%20string%0A%20%20%20%20%20%20%20%20if%20(%0A%20%20%20%20%20%20%20%20%20%20!(%0A%20%20%20%20%20%20%20%20%20%20%20%20matchCache%20%26%26%0A%20%20%20%20%20%20%20%20%20%20%20%20matchCache.string%20%3D%3D%3D%20args.STRING%20%26%26%0A%20%20%20%20%20%20%20%20%20%20%20%20matchCache.regex%20%3D%3D%3D%20args.REGEX%20%26%26%0A%20%20%20%20%20%20%20%20%20%20%20%20matchCache.flags%20%3D%3D%3D%20args.FLAGS%0A%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20)%20%7B%0A%20%20%20%20%20%20%20%20%20%20const%20newFlags%20%3D%20args.FLAGS.includes(%22g%22)%0A%20%20%20%20%20%20%20%20%20%20%20%20%3F%20args.FLAGS%0A%20%20%20%20%20%20%20%20%20%20%20%20%3A%20args.FLAGS%20%2B%20%22g%22%3B%0A%20%20%20%20%20%20%20%20%20%20const%20regex%20%3D%20new%20RegExp(args.REGEX%2C%20newFlags)%3B%0A%0A%20%20%20%20%20%20%20%20%20%20matchCache%20%3D%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20string%3A%20args.STRING%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20regex%3A%20args.REGEX%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20flags%3A%20args.FLAGS%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20arr%3A%20args.STRING.match(regex)%20%7C%7C%20%5B%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%7D%3B%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20return%20matchCache.arr%5Bargs.ITEM%20-%201%5D%20%7C%7C%20%22%22%3B%0A%20%20%20%20%20%20%7D%20catch%20(e)%20%7B%0A%20%20%20%20%20%20%20%20console.error(e)%3B%0A%20%20%20%20%20%20%20%20return%20%22%22%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20countRegex(args%2C%20util)%20%7B%0A%20%20%20%20%20%20%2F%2F%20Fill%20cache%0A%20%20%20%20%20%20%2F%2F%20(ITEM%20is%20casted%20into%200%2C%0A%20%20%20%20%20%20%2F%2F%20but%20we%20don't%20care%20about%20the%20return%20value)%0A%20%20%20%20%20%20this.matchRegex(args%2C%20util)%3B%0A%20%20%20%20%20%20return%20matchCache.arr.length%20%7C%7C%200%3B%0A%20%20%20%20%7D%0A%0A%20%20%20%20testRegex(args%2C%20util)%20%7B%0A%20%20%20%20%20%20try%20%7B%0A%20%20%20%20%20%20%20%20args.STRING%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20%20%20args.REGEX%20%3D%20args.REGEX.toString()%3B%0A%20%20%20%20%20%20%20%20args.FLAGS%20%3D%20args.FLAGS.toString()%3B%0A%0A%20%20%20%20%20%20%20%20return%20new%20RegExp(args.REGEX%2C%20args.FLAGS).test(args.STRING)%3B%0A%20%20%20%20%20%20%7D%20catch%20(e)%20%7B%0A%20%20%20%20%20%20%20%20console.error(e)%3B%0A%20%20%20%20%20%20%20%20return%20false%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20isCase(args%2C%20util)%20%7B%0A%20%20%20%20%20%20const%20string%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20const%20textCase%20%3D%20args.TEXTCASE.toString()%3B%0A%20%20%20%20%20%20switch%20(textCase)%20%7B%0A%20%20%20%20%20%20%20%20case%20CaseParam.LOWERCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.toLowerCase()%20%3D%3D%3D%20string%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.UPPERCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.toUpperCase()%20%3D%3D%3D%20string%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.MIXEDCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20!(%0A%20%20%20%20%20%20%20%20%20%20%20%20string.toUpperCase()%20%3D%3D%3D%20string%20%7C%7C%20string.toLowerCase()%20%3D%3D%3D%20string%0A%20%20%20%20%20%20%20%20%20%20)%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.TITLECASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.split(%2F%5Cb%2Fg).every((word)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(!word)%20return%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20titleCased%20%3D%20word%5B0%5D.toUpperCase()%20%2B%20word.substring(1)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20word%20%3D%3D%3D%20titleCased%3B%0A%20%20%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.EXACTTITLECASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.split(%2F%5Cb%2Fg).every((word)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20if%20(!word)%20return%20true%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20const%20titleCased%20%3D%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20word%5B0%5D.toUpperCase()%20%2B%20word.substring(1).toLowerCase()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20word%20%3D%3D%3D%20titleCased%3B%0A%20%20%20%20%20%20%20%20%20%20%7D)%3B%0A%20%20%20%20%20%20%20%20default%3A%0A%20%20%20%20%20%20%20%20%20%20return%20false%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%0A%20%20%20%20toCase(args%2C%20util)%20%7B%0A%20%20%20%20%20%20const%20string%20%3D%20args.STRING.toString()%3B%0A%20%20%20%20%20%20const%20textCase%20%3D%20args.TEXTCASE.toString()%3B%0A%20%20%20%20%20%20switch%20(textCase)%20%7B%0A%20%20%20%20%20%20%20%20case%20CaseParam.LOWERCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.toLowerCase()%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.UPPERCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string.toUpperCase()%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.MIXEDCASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20Array.from(string)%0A%20%20%20%20%20%20%20%20%20%20%20%20.map((char%2C%20index)%20%3D%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20index%20%25%202%20%3D%3D%3D%200%20%3F%20char.toUpperCase()%20%3A%20char.toLowerCase()%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20.join(%22%22)%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.TITLECASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string%0A%20%20%20%20%20%20%20%20%20%20%20%20.split(%2F%5Cb%2Fg)%0A%20%20%20%20%20%20%20%20%20%20%20%20.map((word)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20(!word)%20return%20%22%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20word%5B0%5D.toUpperCase()%20%2B%20word.substring(1)%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%0A%20%20%20%20%20%20%20%20%20%20%20%20.join(%22%22)%3B%0A%20%20%20%20%20%20%20%20case%20CaseParam.EXACTTITLECASE%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string%0A%20%20%20%20%20%20%20%20%20%20%20%20.split(%2F%5Cb%2Fg)%0A%20%20%20%20%20%20%20%20%20%20%20%20.map((word)%20%3D%3E%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20(!word)%20return%20%22%22%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20return%20word%5B0%5D.toUpperCase()%20%2B%20word.substring(1).toLowerCase()%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D)%0A%20%20%20%20%20%20%20%20%20%20%20%20.join(%22%22)%3B%0A%20%20%20%20%20%20%20%20default%3A%0A%20%20%20%20%20%20%20%20%20%20return%20string%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%0A%20%20Scratch.extensions.register(new%20StringsExt())%3B%0A%7D)(Scratch)%3B%0A%20%7D)(Scratch)%3B"]) {
+        vm.extensionManager.loadExtensionURL(extension);
+      }
+
+      vm.runtime.isProjectPermissionManagerDisabled = true;
+      
+    } catch (e) {
+      handleError(e);
+    }
+  </script>
+  
+  
+    <script>
+      const getProjectData = (function() {
+        const storage = scaffolding.storage;
+        storage.onprogress = (total, loaded) => {
+          setProgress(interpolate(0.2, 0.98, loaded / total));
+        };
+        
+        storage.addWebStore(
+          [
+            storage.AssetType.ImageVector,
+            storage.AssetType.ImageBitmap,
+            storage.AssetType.Sound,
+            storage.AssetType.Font
+          ].filter(i => i),
+          (asset) => new URL('./assets/' + asset.assetId + '.' + asset.dataFormat, location).href
+        );
+        return () => new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+          resolve(xhr.response);
+        };
+        xhr.onerror = () => {
+          if (location.protocol === 'file:') {
+            reject(new Error('Zip environment must be used from a website, not from a file URL.'));
+          } else {
+            reject(new Error('Request to load project data failed.'));
+          }
+        };
+        xhr.onprogress = (e) => {
+          if (e.lengthComputable) {
+            setProgress(interpolate(0.1, 0.2, e.loaded / e.total));
+          }
+        };
+        xhr.responseType = 'arraybuffer';
+        xhr.open('GET', "./assets/project.json");
+        xhr.send();
+      });
+      })();
+    </script>
+  <script>
+    const run = async () => {
+      const projectData = await getProjectData();
+      await scaffolding.loadProject(projectData);
+      setProgress(1);
+      loadingScreen.hidden = true;
+      if (true) {
+        scaffolding.start();
+      } else {
+        launchScreen.hidden = false;
+        launchScreen.addEventListener('click', () => {
+          launchScreen.hidden = true;
+          scaffolding.start();
+        });
+        launchScreen.focus();
+      }
+    };
+    run().catch(handleError);
+  </script>
+</body>
+</html>
