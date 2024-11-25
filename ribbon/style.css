@@ -10,7 +10,7 @@ body {
 }
 
 @font-face {
-  src: url("font/Nexa Bold.otf");
+  src: url("font/NexaBold.otf");
   font-family: Nexa Heavy;
 }
 
@@ -20,7 +20,7 @@ body {
 }
 
 @font-face {
-  src: url("font/Nexa Light.otf");
+  src: url("font/NexaLight.otf");
   font-family: Nexa Light;
 }
 
