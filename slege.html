@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slegehumer Levl Creater</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Slegehumer</h1>
+        </div>
+
+        <form id="levelForm">
+            <div class="section">
+                <h2>Level Metadata</h2>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="trackName">Track Name *</label>
+                            <input type="text" id="trackName" name="trackName" required placeholder="Enter track name">
+                        </div>
+                        <div class="form-group">
+                            <label for="middleText">Middle Text</label>
+                            <input type="text" id="middleText" name="middleText" value="by" placeholder="by">
+                        </div>
+                        <div class="form-group">
+                            <label for="artistName">Artist Name</label>
+                            <input type="text" id="artistName" name="artistName" placeholder="Enter artist name">
+                        </div>
+                        <div class="form-group">
+                            <label for="albumName">Album Name</label>
+                            <input type="text" id="albumName" name="albumName" placeholder="Enter album name">
+                        </div>
+                        <div class="form-group">
+                            <label for="difficulty">Difficulty *</label>
+                            <select id="difficulty" name="difficulty" required>
+                                <option value="Normal">Normal</option>
+                                <option value="Hardcore">Hardcore</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="boss" name="boss">
+                                <label for="boss">Boss Level</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Creator Metadata</h2>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="creatorName">Creator Name *</label>
+                            <input type="text" id="creatorName" name="creatorName" required placeholder="Enter creator name">
+                        </div>
+                        <div class="form-group">
+                            <label for="creatorColor">Creator Color</label>
+                            <input type="color" id="creatorColor" name="creatorColor" value="#00AAFF">
+                        </div>
+                        <div class="form-group">
+                            <label for="creatorScale">Creator Scale</label>
+                            <input type="number" id="creatorScale" name="creatorScale" value="1" step="0.1" min="0.1">
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tintIcon" name="tintIcon">
+                                <label for="tintIcon">Tint Icon</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Required Files</h2>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="songFile">Song File (.ogg) *</label>
+                            <input type="file" id="songFile" name="songFile" accept=".ogg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coverFile">Album Cover (.png) *</label>
+                            <input type="file" id="coverFile" name="coverFile" accept=".png" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Optional Files</h2>
+                <div class="section-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="creatorIconFile">Creator Icon (.png/.gif)</label>
+                            <input type="file" id="creatorIconFile" name="creatorIconFile" accept=".png,.gif">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Sections (Optional)</h2>
+                <div class="section-content">
+                    <div id="sectionsContainer" class="sections-container">
+                        <div class="no-sections">No sections added</div>
+                    </div>
+                    <button type="button" onclick="addSection()">
+                        Add Section
+                    </button>
+                </div>
+            </div>
+
+            <div class="generate-section">
+                <button type="submit">
+                    Generate Level Package
+                </button>
+                <p>
+                    Create your .jsb level file
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let sectionCount = 0;
+
+        function addSection() {
+            sectionCount++;
+            const container = document.getElementById('sectionsContainer');
+            
+            const noSections = container.querySelector('.no-sections');
+            if (noSections) {
+                noSections.remove();
+            }
+
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'section-item';
+            sectionDiv.innerHTML = `
+                <button type="button" onclick="removeSection(this)">×</button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Section Text</label>
+                        <input type="text" name="sectionText_${sectionCount}" placeholder="Enter section text" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Section Image (.png/.gif)</label>
+                        <input type="file" name="sectionImage_${sectionCount}" accept=".png,.gif" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Section Color</label>
+                        <input type="color" name="sectionColor_${sectionCount}" value="#665282">
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" name="tintSectionIcon_${sectionCount}">
+                            <label>Tint Section Icon</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Section Scale</label>
+                        <input type="number" name="sectionScale_${sectionCount}" value="1" step="0.1" min="0.1">
+                    </div>
+                </div>
+            `;
+            container.appendChild(sectionDiv);
+        }
+
+        function removeSection(button) {
+            const container = document.getElementById('sectionsContainer');
+            button.parentNode.remove();
+            
+            if (container.children.length === 0) {
+                container.innerHTML = '<div class="no-sections">No sections added</div>';
+            }
+        }
+
+        document.getElementById('levelForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const zip = new JSZip();
+            
+            const levelData = {
+                gimmicks: [],
+                level: [],
+                metadata: {
+                    trackName: formData.get('trackName') || '',
+                    middleText: formData.get('middleText') || 'by',
+                    artistName: formData.get('artistName') || '',
+                    creatorName: formData.get('creatorName') || '',
+                    albumName: formData.get('albumName') || '',
+                    difficulty: formData.get('difficulty') || 'Normal',
+                    cover: 'cover.png',
+                    tintIcon: formData.get('creatorIconFile') ? 'false' : 'true',
+                    creatorScale: formData.get('creatorScale') || '1',
+                    creatorColor: formData.get('creatorColor') || '#00AAFF',
+                    boss: formData.get('boss') ? 'true' : 'false'
+                }
+            };
+
+            zip.file('level.json', JSON.stringify(levelData, null, 2));
+
+            const songFile = formData.get('songFile');
+            const coverFile = formData.get('coverFile');
+            
+            if (!songFile || !coverFile) {
+                alert('Please upload both song file (.ogg) and cover file (.png)');
+                return;
+            }
+
+            zip.file('song.ogg', songFile);
+            zip.file('cover.png', coverFile);
+
+            const creatorIconFile = formData.get('creatorIconFile');
+            if (creatorIconFile && creatorIconFile.size > 0) {
+                const extension = creatorIconFile.name.split('.').pop();
+                zip.file(`creator_icon.${extension}`, creatorIconFile);
+                levelData.metadata.tintIcon = 'false';
+            }
+
+            const sections = [];
+            const sectionImages = zip.folder('section_images');
+            
+            for (let i = 1; i <= sectionCount; i++) {
+                const sectionText = formData.get(`sectionText_${i}`);
+                const sectionImage = formData.get(`sectionImage_${i}`);
+                const sectionColor = formData.get(`sectionColor_${i}`);
+                const tintSectionIcon = formData.get(`tintSectionIcon_${i}`);
+                const sectionScale = formData.get(`sectionScale_${i}`);
+
+                if (sectionText && sectionImage && sectionImage.size > 0) {
+                    const imageName = `section_${i}.${sectionImage.name.split('.').pop()}`;
+                    sectionImages.file(imageName, sectionImage);
+                    
+                    sections.push([
+                        sectionText,
+                        imageName,
+                        sectionColor || '#665282',
+                        tintSectionIcon ? 'true' : 'false',
+                        sectionScale || '1'
+                    ]);
+                }
+            }
+
+            if (sections.length > 0) {
+                zip.file('sections.json', JSON.stringify(sections, null, 2));
+            }
+
+            try {
+                const content = await zip.generateAsync({type: 'blob'});
+                const trackName = formData.get('trackName') || 'untitled_level';
+                const fileName = `${trackName.replace(/[^a-zA-Z0-9]/g, '_')}.jsb`;
+                
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(content);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                const successMsg = document.createElement('div');
+                successMsg.textContent = 'Level package generated successfully!';
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    successMsg.remove();
+                }, 2000);
+                
+            } catch (error) {
+                alert('Error generating level package: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>
