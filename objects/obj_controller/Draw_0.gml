@@ -1,0 +1,1 @@
+draw_tilemap(tilemap_id, 0, 0);

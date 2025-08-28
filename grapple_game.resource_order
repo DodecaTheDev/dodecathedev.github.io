@@ -1,0 +1,14 @@
+{
+  "FolderOrderSettings":[
+    {"name":"Grapple Stuff","order":5,"path":"folders/Sprites/Player Stuff/Grapple Stuff.yy",},
+    {"name":"Player Sprites","order":1,"path":"folders/Sprites/Player Stuff/Player Sprites.yy",},
+  ],
+  "ResourceOrderSettings":[
+    {"name":"chunk_pos","order":2,"path":"scripts/chunk_pos/chunk_pos.yy",},
+    {"name":"place_meeting_roughrect","order":1,"path":"scripts/place_meeting_roughrect/place_meeting_roughrect.yy",},
+    {"name":"spr_fx_slide_smoke","order":2,"path":"sprites/spr_fx_slide_smoke/spr_fx_slide_smoke.yy",},
+    {"name":"spr_fx_test","order":3,"path":"sprites/spr_fx_test/spr_fx_test.yy",},
+    {"name":"spr_fx_walk_smoke","order":4,"path":"sprites/spr_fx_walk_smoke/spr_fx_walk_smoke.yy",},
+    {"name":"spr_player_dash","order":1,"path":"sprites/spr_player_dash/spr_player_dash.yy",},
+  ],
+}
