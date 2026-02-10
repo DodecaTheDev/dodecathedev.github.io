@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <button id="btn-log">Click me</button>
+  <button id="btn-reset">Reset</button>
+  <pre id="log"></pre>
+
+  <script>
+    let last = null;
+    document.getElementById("btn-log").addEventListener("click", () => {
+      const now = performance.now();
+      if (last === null) {
+        document.getElementById("log").textContent += `Start: 0 ms\n`;
+      } else {
+        const diff = Math.round(now - last);
+        document.getElementById("log").textContent += `${diff} ms\n`;
+      }
+      last = now;
+    });
+	document.getElementById("btn-reset").addEventListener("click", () => {
+      document.getElementById("log").textContent = ``;
+      last = null;
+    });
+  </script>
+</body>
+</html>
